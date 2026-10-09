@@ -1,5 +1,5 @@
-"""Modifies ascot2py.py so that it first try to find libascot.so using relative
-path (if installing from the source) and only then from LD_LIBRARY_PATH.
+"""Modifies ascot2py.py so that it loads the libascot.so that setup.py compiles
+and bundles in a5py/ascotpy/.libs/ when a5py is installed.
 """
 import fileinput
 import sys
@@ -7,24 +7,14 @@ import sys
 for line in fileinput.input("src/ascot2py.py", inplace=True):
     if line.strip() == "_libraries['libascot.so'] = ctypes.CDLL('libascot.so')":
         sys.stdout.write(
-            "# Try to locate libascot.so from ../../build/ or LD_LIBRARY_PATH\n"
+            "# libascot.so is compiled and bundled here when a5py is installed (setup.py)\n"
             "from pathlib import Path\n"
-            "err = 0\n"
-            "libpath = str(Path(__file__).absolute().parent.parent.parent) \\\n"
-            "    + \"/build/libascot.so\"\n"
+            "libpath = Path(__file__).absolute().parent / \".libs\" / \"libascot.so\"\n"
             "try:\n"
-            "    _libraries['libascot.so'] = ctypes.CDLL(libpath)\n"
+            "    _libraries['libascot.so'] = ctypes.CDLL(str(libpath))\n"
             "except OSError as error:\n"
-            "    err = error\n"
-            "if err:\n"
-            "    if not 'libascot.so' in str(err): raise ImportError(str(err))\n"
-            "if 'libascot.so' not in _libraries:\n"
-            "    err = 0\n"
-            "    try:\n"
-            "        _libraries['libascot.so'] = ctypes.CDLL('libascot.so')\n"
-            "    except OSError as error:\n"
-            "        err = error\n"
-            "    if err: raise ImportError(str(err))\n"
+            "    raise ImportError(\n"
+            "        f\"{error}. Reinstall a5py to compile libascot.so.\") from error\n"
             "\n"
             )
     else:

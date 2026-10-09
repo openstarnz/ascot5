@@ -117,24 +117,14 @@ class Union(ctypes.Union, AsDictMixin):
 
 
 _libraries = {}
-# Try to locate libascot.so from ../../build/ or LD_LIBRARY_PATH
+# libascot.so is compiled and bundled here when a5py is installed (setup.py)
 from pathlib import Path
-err = 0
-libpath = str(Path(__file__).absolute().parent.parent.parent) \
-    + "/build/libascot.so"
+libpath = Path(__file__).absolute().parent / ".libs" / "libascot.so"
 try:
-    _libraries['libascot.so'] = ctypes.CDLL(libpath)
+    _libraries['libascot.so'] = ctypes.CDLL(str(libpath))
 except OSError as error:
-    err = error
-if err:
-    if not 'libascot.so' in str(err): raise ImportError(str(err))
-if 'libascot.so' not in _libraries:
-    err = 0
-    try:
-        _libraries['libascot.so'] = ctypes.CDLL('libascot.so')
-    except OSError as error:
-        err = error
-    if err: raise ImportError(str(err))
+    raise ImportError(
+        f"{error}. Reinstall a5py to compile libascot.so.") from error
 
 c_int128 = ctypes.c_ubyte*16
 c_uint128 = c_int128
