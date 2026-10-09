@@ -400,13 +400,13 @@ class Ascot(Ascotpy):
 
         psi0 = data["psi0"]
         psi1 = data["psi1"]
-        psi0 = -7.1
+        #psi0 = -7.1
 
         N     = 10000
         phi   = np.random.rand(N,) * 360
         theta = np.random.rand(N,) * 2 * np.pi
 
-        axis = self.input_eval(1, phi, 0, 0, "axis")
+        #axis = self.input_eval(1, phi, 0, 0, "axis")
         z0 = axis["axisz"]
         r0 = axis["axisr"]
 

@@ -5,13 +5,13 @@ dependencies:
   - c-compiler
   - make
   - llvm-openmp
-  - python>=3.10
+  - python=3.12
   - hdf5
   - zlib
   - setuptools
   - pip
   - ipython
-  - numpy
+  - numpy=2.3
   - scipy
   - h5py
   - xmlschema

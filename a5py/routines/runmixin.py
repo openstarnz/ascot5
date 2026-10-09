@@ -507,6 +507,7 @@ class RunMixin(DistMixin):
         """
         _, area, edepo, _, _ = self.getwall_loads(flags=flags)
         wetted_total = np.sum(area)
+        print('area',area)
         energy_peak  = np.amax(edepo/area)
         return wetted_total, energy_peak
 
@@ -2021,12 +2022,14 @@ class RunMixin(DistMixin):
             if cmap is None: cmap = 'viridis'
         elif isinstance(qnt, str):
             wetted, area, edepo, pdepo, iangle = self.getwall_loads()
+            print("edepo", np.min(edepo), np.max(edepo))
             nelement = wetted.size
             x1x2x3 = d["x1x2x3"][wetted-1]
             y1y2y3 = d["y1y2y3"][wetted-1]
             z1z2z3 = d["z1z2z3"][wetted-1]
             if qnt == 'eload':
                 color = edepo/area
+                print('eload color', color)
                 clabel = r"Wall load [W/m$^2$]"
                 if cmap is None: cmap = 'Reds'
             elif qnt == 'pload':
@@ -2086,8 +2089,13 @@ class RunMixin(DistMixin):
         idx    = np.flipud( np.argsort(np.amin(rminor, axis=1), axis=0) )
         tor    = tor[idx, :]
         pol    = pol[idx, :]
+        print(color)
         color  = color[idx]
-
+        print(color)
+        print("test", np.isnan(tor).any())
+        print("test", np.isnan(pol).any())
+        print("test", np.isnan(color).any())
+        print("color", np.max(color), np.max(color))
         # Convert the data into format [vert0, vert1, ...] where verti contains
         # vertices of triangle i in (3,2) array.
         patches = np.zeros((nelement,3,2))
